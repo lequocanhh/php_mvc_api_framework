@@ -1,0 +1,12 @@
+{
+    "name": "a003021/php-framework",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "ext-pdo": "*"
+    }
+}
