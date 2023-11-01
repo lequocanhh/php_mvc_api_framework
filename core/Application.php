@@ -9,14 +9,14 @@ class Application
     public Database $db;
     public static Application $app;
     public static string $ROOT_DIR;
-    public function __construct($rootDir, array $config)
+    public function __construct($rootDir, Database $db, Request $request, Response $response, Router $router)
     {
         self::$app = $this;
         self::$ROOT_DIR = $rootDir;
-        $this->request = new Request();
-        $this->response = new Response();
-        $this->router = new Router($this->request, $this->response);
-        $this->db = new Database($config['db']);
+        $this->request = $request;
+        $this->response = $response;
+        $this->router = $router;
+        $this->db = $db;
     }
 
     public function run()

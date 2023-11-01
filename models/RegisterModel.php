@@ -4,11 +4,11 @@ namespace app\models;
 
 use app\core\DbModel;
 
-class UserModel extends DbModel
+class RegisterModel extends DbModel
 {
     public string $firstname = '';
     public string $lastname = '';
-    public string $username = '';
+    public string $email = '';
     public string $password = '';
     public string $passwordConfirm = '';
 
@@ -30,9 +30,8 @@ class UserModel extends DbModel
         return [
             'firstname' => [self::RULE_REQUIRED],
             'lastname' => [self::RULE_REQUIRED],
-            'username' => [self::RULE_REQUIRED,[
-                //it will be unique in the database userModel class
-                self::RULE_UNIQUE, 'class' => self::class, 'attribute' => 'username'
+            'email' => [self::RULE_REQUIRED, self::RULE_EMAIL, [
+                self::RULE_UNIQUE, 'class' => self::class
             ]],
             'password' => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 8]],
             'passwordConfirm' => [[self::RULE_MATCH, 'match' => 'password']],
@@ -41,6 +40,6 @@ class UserModel extends DbModel
 
     public function attributes():  array
     {
-        return ['firstname', 'lastname', 'username', 'password'];
+        return ['firstname', 'lastname', 'email', 'password'];
     }
 }

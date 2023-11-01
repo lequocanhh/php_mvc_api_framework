@@ -8,16 +8,16 @@ class Response
     {
         return http_response_code($statusCode);
     }
-    public function render($status, $dbResponse){
-        header('Content-Type: application/json');
+    public function render(int $status, bool $success, string $message, array $data=[]): void{
+        $response = [];
         http_response_code($status);
-
-        if($status == 200){
-            $response = $dbResponse;
-        }else{
-            $response['status'] = $status;
-            $response['message'] = $dbResponse;
-        }
+        header("Access-Control-Allow-Origin: *", true);
+        header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS", true);
+        header("Content-Type: application/json; charset=UTF-8");
+        $response['status'] = $status;
+        $response['success'] = $success;
+        $response['message'] = $message;
+        $response['data'] = $data;
         echo json_encode($response);
         die;
     }

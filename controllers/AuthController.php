@@ -2,35 +2,42 @@
 
 namespace app\controllers;
 
-use app\core\Application;
 use app\core\Request;
+use app\core\Response;
 use app\models\LoginModel;
-use app\models\UserModel;
+use app\models\RegisterModel;
 
 
 class AuthController
 {
+    public const SUCCESS = true;
+    public const FAILED = true;
 
-    public function register(Request $request)
+    public function __construct()
     {
-        $userModel = new UserModel();
-        $userModel->loadData($request->getBody());
-        if($userModel->validate() && $userModel->save()){
-            Application::$app->session->setFlash('success', 'Thank for register');
-            return 'register success';
+
+    }
+
+    public function register(Request $request, Response $response): void
+    {
+        $registerModel = new RegisterModel();
+        $registerModel->loadData($request->getBody());
+        if($registerModel->validate() && $registerModel->save()){
+            $response->render(200, self::SUCCESS,'Register successfully');
         }else{
-            return 'register failed';
+            $response->render(404, self::FAILED,'Register failed');
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request, Response $response): void
     {
-
         $loginModel = new LoginModel();
         $loginModel->loadData($request->getBody());
-        if($loginModel->validate() && $loginModel->login()){
-
-            return 'login success';
+        $user = $loginModel->login();
+        if($loginModel->validate() && $user){
+            $response->render(200, self::SUCCESS, 'Login successfully', $user);
+        }else{
+            $response->render(404, self::FAILED,'Login failed');
         }
     }
 
