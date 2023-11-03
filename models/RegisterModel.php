@@ -38,7 +38,7 @@ class RegisterModel extends DbModel
         ];
     }
 
-    public function attributes():  array
+    public function attributes(): array
     {
         return ['firstname', 'lastname', 'email', 'password'];
     }

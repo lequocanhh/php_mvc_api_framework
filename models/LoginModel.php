@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models;
 
 use app\core\DbModel;
@@ -11,17 +12,17 @@ class LoginModel extends DbModel
 
     public function login(): array
     {
-         $user = parent::findOne(['email' => $this->email]);
-         $filteredData = [];
-         if($user && password_verify($this->password, $user->password)){
-            foreach ($user as $field => $value){
-                if($field !== "password"){
+        $user = parent::findOne(['email' => $this->email]);
+        $filteredData = [];
+        if ($user && password_verify($this->password, $user->password)) {
+            foreach ($user as $field => $value) {
+                if ($field !== "password") {
                     $filteredData[$field] = $value;
                 }
             }
             return $filteredData;
-         }
-         return [];
+        }
+        return [];
     }
 
 
