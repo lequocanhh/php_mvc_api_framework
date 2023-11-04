@@ -30,20 +30,30 @@ class Request
 
     public function getBody(): array
     {
-//        if($this->getMethod() === 'get'){
-//            foreach ($_GET as $key => $value){
-//                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-//            }
-//        }
         if($this->getMethod() === 'post'){
 
             $post_data = json_decode(file_get_contents("php://input"), true);
-                foreach ($post_data as $key => $value) {
-                    $this->body[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                }
+            return $this->filterNestedData($post_data);
+//                foreach ($post_data as $key => $value) {
+//                    $this->body[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+//                }
         }
-        return $this->body;
+        return [];
     }
+
+    public function filterNestedData($data): array
+    {
+        $body = [];
+        foreach ($data as $key => $value){
+            if(is_array($value)){
+                $body[$key] = $this->filterNestedData($value);
+            }else{
+                $body[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            }
+        }
+        return $body;
+    }
+
 
     public function toArray(): array
     {

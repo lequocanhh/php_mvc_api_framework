@@ -93,7 +93,14 @@ class UserEntity
 
     public function toArray(): array
     {
-        return ['id', 'firstname', 'lastname', 'email', 'password', 'is_admin'];
+        return [
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'password' => $this->password,
+            'is_admin' => $this->is_admin
+        ];
     }
 
 

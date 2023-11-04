@@ -83,9 +83,9 @@ class UserController
         $password = $req['password'];
         $is_admin = $req['is_admin'];
         try {
-            $userDto = new UserEntity(Uuid::uuid4(), $firstname, $lastname, $email, $password, $is_admin);
-            $user = $this->userService->register($userDto);
-            if($user){
+            $user = new UserEntity(Uuid::uuid4(), $firstname, $lastname, $email, $password, $is_admin);
+            $userCreated = $this->userService->register($user);
+            if($userCreated){
                 $response->render(200, 'Register successfully');
             }else{
                 $response->render(400, "Register failed");

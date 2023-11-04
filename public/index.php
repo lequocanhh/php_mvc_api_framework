@@ -31,7 +31,7 @@ $app = new Application(dirname(__DIR__), $request, $response, $router);
 //$app->router->get('/contact', [SiteController::class, 'user']);
 //$app->router->post('/contact', [SiteController::class, 'contact']);
 
-$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey']);
+$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey'], [Authentication::class, 'adminTokenValidation']);
 
 $app->router->post('/api/v1/register', [UserController::class, 'register']);
 $app->router->post('/api/v1/login', [UserController::class, 'login']);

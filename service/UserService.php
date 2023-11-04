@@ -7,13 +7,13 @@ use app\dto\UserLoginDto;
 use app\dto\UserResponseDto;
 use app\models\repository\UserRepository;
 use app\models\UserEntity;
-use app\repository\UserRepositoryInterface;
+use app\repository\IUserRepository;
 use DI\NotFoundException;
 use ErrorException;
 
 class UserService
 {
-    private UserRepositoryInterface $userRepository;
+    private UserRepository $userRepository;
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -26,7 +26,7 @@ class UserService
             return false;
         }
         $user->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
-        $this->userRepository->save($user);
+        $this->userRepository->create($user);
         return true;
     }
 

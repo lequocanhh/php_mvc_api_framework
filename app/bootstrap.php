@@ -1,7 +1,7 @@
 <?php
 
 use app\models\repository\UserRepository;
-use app\repository\UserRepositoryInterface;
+use app\repository\IUserRepository;
 use DI\ContainerBuilder;
 
 require __DIR__ . '/../vendor/autoload.php';
