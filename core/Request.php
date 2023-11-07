@@ -22,7 +22,7 @@ class Request
 
     public function setBody(array $data): void
     {
-        $this->getBody();
+//        $this->getBody();
         foreach ($data as $key => $value){
             $this->body[$key] = $value;
         }

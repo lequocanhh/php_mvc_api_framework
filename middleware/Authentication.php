@@ -34,7 +34,6 @@ class Authentication
     {
         self::tokenValidation($req, $res);
         $req = $req->toArray();
-
         if($req['is_admin']) return $req['is_admin'];
         $res->render(401, "You have not permission");
         return false;

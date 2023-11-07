@@ -15,6 +15,22 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
         $this->db = $db;
     }
 
+    public function getAllSurvey()
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT s.id, s.title AS survey_title, s.description AS survey_description, q.title AS question_title, o.title AS option_title
+                FROM surveys s
+                JOIN users u ON (u.id = s.created_by)
+                JOIN questions q ON (q.survey_id = s.id)
+                LEFT JOIN options o ON (o.question_id = q.id)
+                WHERE s.created_by = u.id");
+            $stmt->execute();
+           return $stmt->fetchAll();
+//        echo "<pre>";
+//        print_r($obj); // or var_dump($data);
+//        echo "</pre>";
+    }
+
     public function createSurvey(SurveyEntity $survey): void
     {
        parent::save($survey);

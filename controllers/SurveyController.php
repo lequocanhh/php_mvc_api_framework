@@ -28,6 +28,32 @@ class SurveyController
         $this->questionService = $questionService;
         $this->optionService = $optionService;
     }
+
+    public function getAllSurvey(Request $request, Response $response): void
+    {
+        try {
+           $data = $this->surveyRepository->getAllSurvey();
+            $result = [
+                'title' => $data[0]['survey_title'],
+                'description' => $data[0]['survey_description'],
+                'questions' => [],
+            ];
+            foreach ($data as $row) {
+                $question = $row['question_title'];
+                $option = $row['option_title'];
+
+                if (!isset($result['questions'][$question])) {
+                    $result['questions'][$question] = ['title' => $question, 'options' => []];
+                }
+                $result['questions'][$question]['options'][] = $option;
+            }
+            $response->render(200, 'Create a survey successfully', $result);
+        }catch (Exception $error){
+            $response->render(404, "Cannot get any survey");
+            throw new \Error("Cannot get survey .$error");
+        }
+    }
+
     public function createNewSurvey(Request $request, Response $response): void
     {
         $req = $request->getBody();
