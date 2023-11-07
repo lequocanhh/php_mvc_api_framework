@@ -48,25 +48,49 @@ class Router
         ];
     }
 
+    public function matchRoute($path, $method)
+    {
+        if (isset($this->routes[$method])) {
+            foreach ($this->routes[$method] as $routeKey => $routeInfo) {
+                $pattern = $this->convertToRegex($routeKey);
+                if (preg_match($pattern, $path, $matches)) {
+                    $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                    return [$routeInfo['callback'], $params, $routeInfo['middleware']];
+                }
+            }
+        }
+        return false;
+    }
+
+    public function convertToRegex($route_key)
+    {
+        $regex = preg_replace_callback('/\{(\w+)\}/', function ($matches) {
+            return "(?P<{$matches[1]}>[\w-]+)";
+        }, $route_key);
+        return "#^" . $regex . "$#";
+    }
+
     public function resolve()
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
 
-        $routeInfo = $this->routes[$method][$path] ?? false;
+        $routeInfo = $this->matchRoute($path, $method);
 
-        if($routeInfo === false){
+        if ($routeInfo === false) {
             $this->response->setStatusCode(404);
             return "Not found";
         }
 
-        $middleware = $routeInfo['middleware'];
-        if(!empty($middleware)){
-            $this->container->call($middleware);
+        list($callback, $params, $middleware) = $routeInfo;
+
+        if (!empty($middleware)) {
+            foreach ($middleware as $middlewareCallback) {
+                $this->container->call($middlewareCallback);
+            }
         }
 
-        $callback = $routeInfo['callback'];
-        return $this->container->call($callback);
+        return $this->container->call($callback, $params);
     }
 
 

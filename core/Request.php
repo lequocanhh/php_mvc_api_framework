@@ -9,10 +9,27 @@ class Request
     {
         $path = $_SERVER['REQUEST_URI'] ?? '/';
         $position = strpos($path, '?') ;
+
         if($position === false){
             return $path;
         }
+
+
         return substr($path, 0, $position);
+    }
+
+    public function getIdFromPath()
+    {
+        $path = $this->getPath();
+        $matches = [];
+        if(preg_match('/\/api\/v1\/survey\/(.+)/', $path, $matches)){
+            var_dump($matches);
+            exit;
+            return $matches[1];
+        }
+        echo 123;
+        exit;
+        return null;
     }
 
     public function getMethod(): string

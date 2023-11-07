@@ -3,12 +3,19 @@
 namespace app\models\repository;
 
 use app\core\Database;
+use PDO;
 
 class BaseRepository
 {
     protected string $table;
     protected Database $db;
 
+    public function getAll(): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM $this->table");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function find($column, $value)
     {
