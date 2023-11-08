@@ -49,6 +49,15 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
         parent::save($question);
     }
 
+    public function updateParticipantRecord($id): bool
+    {
+        $stmt = $this->db->prepare("UPDATE $this->table SET participant = participant+1 WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $rowCount = $stmt->rowCount();
+        return $rowCount > 0;
+    }
+
     public function beginTransaction(): void
     {
         $this->db->pdo->beginTransaction();

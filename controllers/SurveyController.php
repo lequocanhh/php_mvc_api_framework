@@ -121,8 +121,32 @@ class SurveyController
         }catch (Exception $error){
             $this->surveyRepository->rollback();
             $response->render(404, "Cannot save this survey");
-            throw new \Error("Cannot save this survey to db .$error");
+            echo $error;
         }
 
     }
+
+    public function updateRecordDoForm(Request $request, Response $response): void
+    {
+        $req = $request->getBody();
+        $survey_id = $req['survey_id'];
+        $optionAnswerRecord = $req["ids"];
+
+        $this->surveyRepository->beginTransaction();
+        try {
+            $this->surveyService->updateParticipantRecord($survey_id);
+            foreach ($optionAnswerRecord as $recordId){
+               $this->optionService->updateOptionRecord($recordId);
+            }
+
+            $this->surveyRepository->commit();
+            $response->render(200, 'Save record successfully');
+        }catch (Exception $error){
+            $this->surveyRepository->rollback();
+            echo $error->getMessage();
+            $response->render(404, "Cannot send this record");
+
+        }
+    }
+
 }

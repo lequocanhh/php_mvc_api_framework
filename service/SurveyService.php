@@ -36,6 +36,12 @@ class SurveyService
         $this->surveyRepository->createSurvey($survey);
     }
 
+    public function updateParticipantRecord($id): bool
+    {
+       $isUpdated = $this->surveyRepository->updateParticipantRecord($id);
+       return $isUpdated ? true : throw new \RuntimeException("Update participant in survey record failed.");
+    }
+
     public function createQuestion(QuestionEntity $question): void
     {
 

@@ -27,4 +27,13 @@ class OptionRepository extends BaseRepository implements IOptionRepository
     {
         parent::save($option);
     }
+
+    public function updateOptionRecord($id): bool
+    {
+        $stmt = $this->db->prepare("UPDATE $this->table SET chooser = chooser+1 WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $rowCount = $stmt->rowCount();
+        return $rowCount > 0;
+    }
 }

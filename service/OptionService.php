@@ -4,6 +4,7 @@ namespace app\service;
 
 use app\models\OptionEntity;
 use app\models\repository\OptionRepository;
+use http\Exception\RuntimeException;
 
 class OptionService
 {
@@ -20,7 +21,6 @@ class OptionService
         foreach ($optionList as $option) {
             $options[] = [
                 'id' => $option['id'],
-                'question_id' => $option['question_id'],
                 'title' => $option['title']
             ];
         }
@@ -30,5 +30,11 @@ class OptionService
     public function createOption(OptionEntity $option): void
     {
         $this->optionRepository->createOption($option);
+    }
+
+    public function updateOptionRecord($id): bool
+    {
+       $isUpdated = $this->optionRepository->updateOptionRecord($id);
+       return $isUpdated ? true : throw new \RuntimeException("Updated chooser failed");
     }
 }
