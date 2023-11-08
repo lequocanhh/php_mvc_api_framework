@@ -40,10 +40,31 @@ class SurveyController
         }
     }
 
-    public function getSurveyById(Request $request, Response $response, string $id)
+    public function getSurveyById(Request $request, Response $response, string $id): void
     {
-        var_dump($id);
-        var_dump("hello");exit;
+        try {
+            $surveySet = [];
+            $questionSet = [];
+            $survey = $this->surveyService->getSurveyById($id);
+            $surveySet = $survey;
+            $questions = $this->questionService->getQuestionBySurveyId($id);
+
+            foreach ($questions as $question) {
+                $options = $this->optionService->getAllOptionByQuestionId($question['id']);
+                    $questions = [
+                        'id' => $question['id'],
+                        'title' => $question['title'],
+                        'options' => $options
+                    ];
+                 $questionSet[] = $questions;
+            }
+            $surveySet['questions'] = $questionSet;
+
+            $response->render(200, 'Get a survey successfully', $surveySet);
+        }catch (Exception $error){
+            $response->render(404, "Cannot get any survey");
+            throw new \Error("Cannot get survey .$error");
+        }
     }
 
 //    public function getAllSurvey(Request $request, Response $response): void

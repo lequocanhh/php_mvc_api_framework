@@ -5,6 +5,7 @@ namespace app\models\repository;
 use app\core\Database;
 use app\models\QuestionEntity;
 use app\repository\IQuestionRepository;
+use PDO;
 
 class QuestionRepository extends BaseRepository implements IQuestionRepository
 {
@@ -12,6 +13,14 @@ class QuestionRepository extends BaseRepository implements IQuestionRepository
     {
         $this->table = 'questions';
         $this->db = $db;
+    }
+
+    public function getQuestionBySurveyId($surveyId): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM $this->table WHERE survey_id = :id");
+        $stmt->bindValue(':id', $surveyId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createQuestion(QuestionEntity $question): void

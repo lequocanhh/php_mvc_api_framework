@@ -3,6 +3,7 @@
 namespace app\models\repository;
 
 use app\core\Database;
+use app\models\SurveyEntity;
 use PDO;
 
 class BaseRepository
@@ -15,6 +16,15 @@ class BaseRepository
         $stmt = $this->db->prepare("SELECT * FROM $this->table");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findById($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM $this->table WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetchObject();
     }
 
     public function find($column, $value)

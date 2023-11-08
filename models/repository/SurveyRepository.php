@@ -20,6 +20,12 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
         return parent::getAll();
     }
 
+    public function getSurveyById($id): SurveyEntity
+    {
+        $surveyEntity = parent::findById($id);
+        return new SurveyEntity($surveyEntity->id, $surveyEntity->title, $surveyEntity->description, $surveyEntity->participant, $surveyEntity->created_by, $surveyEntity->created_at);
+    }
+
 //    public function getAllSurvey()
 //    {
 //        $stmt = $this->db->prepare(

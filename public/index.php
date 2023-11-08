@@ -28,7 +28,7 @@ $app = new Application(dirname(__DIR__), $request, $response, $router);
 
 
 $app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey']);
-$app->router->get('/api/v1/survey/{id}', [SurveyController::class, 'getSurveyById']);
+$app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById']);
 
 $app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey'], [Authentication::class, 'adminTokenValidation']);
 
