@@ -31,7 +31,7 @@ $app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey']);
 $app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById']);
 
 $app->router->post('/api/v1/survey/do-form', [SurveyController::class, 'updateRecordDoForm']);
-$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey'], [Authentication::class, 'adminTokenValidation']);
+$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey']);
 
 $app->router->post('/api/v1/register', [UserController::class, 'register']);
 $app->router->post('/api/v1/login', [UserController::class, 'login']);

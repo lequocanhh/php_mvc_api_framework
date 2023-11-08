@@ -31,5 +31,6 @@ class QuestionService
     public function createQuestion(QuestionEntity $question): void
     {
         $this->questionRepository->createQuestion($question);
+        // ban notificaiton
     }
 }

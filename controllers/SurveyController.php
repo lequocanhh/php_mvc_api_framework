@@ -111,7 +111,7 @@ class SurveyController
                 $this->questionService->createQuestion($questionEntity);
 
                 foreach ($question['options'] as $option){
-                    $optionEntity = new OptionEntity(Uuid::uuid4(), $questionEntity->getId(), $option, 0);
+                    $optionEntity = new OptionEntity(Uuid::uuid4(), $questionEntity->getId(), $option['title'], 0);
                     $this->optionService->createOption($optionEntity);
                 }
 
@@ -141,7 +141,7 @@ class SurveyController
 
             $this->surveyRepository->commit();
             $response->render(200, 'Save record successfully');
-        }catch (Exception $error){
+        } catch (Exception $error){
             $this->surveyRepository->rollback();
             echo $error->getMessage();
             $response->render(404, "Cannot send this record");

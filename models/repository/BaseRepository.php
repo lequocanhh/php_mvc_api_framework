@@ -3,7 +3,6 @@
 namespace app\models\repository;
 
 use app\core\Database;
-use app\models\SurveyEntity;
 use PDO;
 
 class BaseRepository
