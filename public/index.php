@@ -26,11 +26,11 @@ $response = new Response();
 $router = new Router($request, $response, $container);
 $app = new Application(dirname(__DIR__), $request, $response, $router);
 
-//$app->router->get('/', 'home');
-//
-//$app->router->get('/contact', [SiteController::class, 'user']);
-//$app->router->post('/contact', [SiteController::class, 'contact']);
 
+$app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey']);
+$app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById']);
+
+$app->router->post('/api/v1/survey/do-form', [SurveyController::class, 'updateRecordDoForm']);
 $app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey']);
 
 $app->router->post('/api/v1/register', [UserController::class, 'register']);

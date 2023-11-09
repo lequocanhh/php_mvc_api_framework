@@ -6,9 +6,9 @@ use app\dto\UserDto;
 use app\dto\UserLoginDto;
 use app\models\UserEntity;
 
-interface UserRepositoryInterface
+interface IUserRepository
 {
     public function findByEmail(string $email): ?UserEntity;
-    public function save(UserEntity $user): void;
+    public function create(UserEntity $user): void;
 
 }
