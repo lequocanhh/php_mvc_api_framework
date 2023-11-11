@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Request;
 use app\core\Response;
+use app\dto\SurveyDto;
 use app\models\OptionEntity;
 use app\models\QuestionEntity;
 use app\models\repository\SurveyRepository;
@@ -11,6 +12,7 @@ use app\models\SurveyEntity;
 use app\service\OptionService;
 use app\service\QuestionService;
 use app\service\SurveyService;
+use DateTime;
 use Exception;
 use Ramsey\Uuid\Uuid;
 
@@ -33,20 +35,18 @@ class SurveyController
     {
         try {
             $data = $this->surveyService->getAllSurvey();
-            $response->render(200, 'Create a survey successfully', $data);
+            $response->render(200, 'Get all survey successfully', $data);
         }catch (Exception $error){
-            $response->render(404, "Cannot get any survey");
-            throw new \Error("Cannot get survey .$error");
+            $response->render(400, "Cannot get any survey");
+            echo $error;
         }
     }
 
     public function getSurveyById(Request $request, Response $response, string $id): void
     {
+        $questionSet = [];
         try {
-            $surveySet = [];
-            $questionSet = [];
             $survey = $this->surveyService->getSurveyById($id);
-            $surveySet = $survey;
             $questions = $this->questionService->getQuestionBySurveyId($id);
 
             foreach ($questions as $question) {
@@ -58,47 +58,23 @@ class SurveyController
                     ];
                  $questionSet[] = $questions;
             }
-            $surveySet['questions'] = $questionSet;
+            $survey['questions'] = $questionSet;
 
-            $response->render(200, 'Get a survey successfully', $surveySet);
+            $response->render(200, 'Get a survey successfully', $survey);
         }catch (Exception $error){
-            $response->render(404, "Cannot get any survey");
-            throw new \Error("Cannot get survey .$error");
+            $response->render(400, "Cannot get any survey");
+            echo $error;
         }
     }
 
-//    public function getAllSurvey(Request $request, Response $response): void
-//    {
-//        try {
-//           $data = $this->surveyRepository->getAllSurvey();
-//            $result = [
-//                'title' => $data[0]['survey_title'],
-//                'description' => $data[0]['survey_description'],
-//                'questions' => [],
-//            ];
-//            foreach ($data as $row) {
-//                $question = $row['question_title'];
-//                $option = $row['option_title'];
-//
-//                if (!isset($result['questions'][$question])) {
-//                    $result['questions'][$question] = ['title' => $question, 'options' => []];
-//                }
-//                $result['questions'][$question]['options'][] = $option;
-//            }
-//            $response->render(200, 'Create a survey successfully', $result);
-//        }catch (Exception $error){
-//            $response->render(404, "Cannot get any survey");
-//            throw new \Error("Cannot get survey .$error");
-//        }
-//    }
 
     public function createNewSurvey(Request $request, Response $response): void
     {
+        $now = new DateTime();
         $req = $request->getBody();
         $title = $req['title'];
         $description = $req['description'];
         $created_by = $req['created_by'];
-        $now = new \DateTime();
         $created_at = $now->format('Y-m-d H:i:s');
         $questions = $req['questions'];
 
@@ -109,44 +85,80 @@ class SurveyController
             foreach ($questions as $question){
                 $questionEntity = new QuestionEntity(Uuid::uuid4(), $surveyEntity->getId(), $question['title']);
                 $this->questionService->createQuestion($questionEntity);
-
                 foreach ($question['options'] as $option){
                     $optionEntity = new OptionEntity(Uuid::uuid4(), $questionEntity->getId(), $option['title'], 0);
                     $this->optionService->createOption($optionEntity);
                 }
-
             }
             $this->surveyRepository->commit();
             $response->render(200, 'Create a survey successfully');
         }catch (Exception $error){
             $this->surveyRepository->rollback();
-            $response->render(404, "Cannot save this survey");
+            $response->render(400, "Cannot create this survey, please try again");
             echo $error;
+        }
+    }
+
+    public function updateSurvey(Request $request, Response $response): void
+    {
+        $req = $request->getBody();
+        $questions = $req['questions'];
+        $surveyId = $req['id'];
+
+        $this->surveyRepository->beginTransaction();
+        try {
+            $survey = new SurveyDto($surveyId, $req['title'], $req['description']);
+            $this->surveyService->updateSurvey($survey);
+            $this->questionService->updateQuestion($surveyId, $questions);
+
+            $this->surveyRepository->commit();
+            $response->render(200, 'Update survey successfully');
+        }catch (Exception $error){
+            $this->surveyRepository->rollback();
+            var_dump($error->getMessage());
+            $response->render(400, "Cannot update this survey, please try again");
+
         }
 
     }
 
-    public function updateRecordDoForm(Request $request, Response $response): void
+    public function updateRecordDoSurvey(Request $request, Response $response): void
     {
         $req = $request->getBody();
-        $survey_id = $req['survey_id'];
+        $surveyId = $req['survey_id'];
         $optionAnswerRecord = $req["ids"];
 
         $this->surveyRepository->beginTransaction();
         try {
-            $this->surveyService->updateParticipantRecord($survey_id);
+            $this->surveyService->updateParticipantRecord($surveyId);
             foreach ($optionAnswerRecord as $recordId){
                $this->optionService->updateOptionRecord($recordId);
             }
 
-            $this->surveyRepository->commit();
-            $response->render(200, 'Save record successfully');
+
         } catch (Exception $error){
             $this->surveyRepository->rollback();
-            echo $error->getMessage();
-            $response->render(404, "Cannot send this record");
-
+            $response->render(400, $error->getMessage());
         }
     }
 
+    public function deleteSurvey(Request $request, Response $response, string $id): void
+    {
+        $this->surveyRepository->beginTransaction();
+        try {
+            $questions = $this->questionService->getQuestionBySurveyId($id);
+            foreach ($questions as $question){
+                $this->optionService->deleteOptionByQuestionId($question['id']);
+            }
+            $this->questionService->deleteQuestionBySurveyId($id);
+            $this->surveyRepository->delete($id);
+
+            $this->surveyRepository->commit();
+            $response->render(200, 'Delete survey successfully');
+        }catch (Exception $error){
+            $this->surveyRepository->rollback();
+            $response->render(400, $error->getMessage());
+        }
+
+    }
 }

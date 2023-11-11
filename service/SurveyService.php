@@ -2,10 +2,12 @@
 
 namespace app\service;
 
-use app\dto\SurveyResponseDto;
+use app\dto\SurveyDto;
+use app\exception\SurveyException;
 use app\models\QuestionEntity;
 use app\models\repository\SurveyRepository;
 use app\models\SurveyEntity;
+use RuntimeException;
 
 class SurveyService
 {
@@ -21,14 +23,15 @@ class SurveyService
         return $this->surveyRepository->getAllSurvey();
     }
 
+    /**
+     * @throws SurveyException
+     */
     public function getSurveyById($id): array
     {
-        $data = $this->surveyRepository->getSurveyById($id);
-        return [
-                'id' => $data->getId(),
-                'title' => $data->getTitle(),
-                'description' => $data->getDescription()
-            ];
+        $surveyExist = $this->surveyRepository->getSurveyById($id);
+        !$surveyExist && throw SurveyException::surveyNotFound();
+        $surveyResponse = new SurveyDto($surveyExist->getId(), $surveyExist->getTitle(), $surveyExist->getDescription());
+        return $surveyResponse->toArray();
     }
 
     public function createSurvey(SurveyEntity $survey): void
@@ -36,10 +39,15 @@ class SurveyService
         $this->surveyRepository->createSurvey($survey);
     }
 
+    public function updateSurvey(SurveyDto $survey): void
+    {
+       $this->surveyRepository->updateSurvey($survey);
+    }
+
     public function updateParticipantRecord($id): bool
     {
        $isUpdated = $this->surveyRepository->updateParticipantRecord($id);
-       return $isUpdated ? true : throw new \RuntimeException("Update participant in survey record failed.");
+       return $isUpdated ? true : throw new RuntimeException("Cannot send this record, please try again!");
     }
 
     public function createQuestion(QuestionEntity $question): void

@@ -23,8 +23,26 @@ class QuestionRepository extends BaseRepository implements IQuestionRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function updateQuestion(QuestionEntity $question): void
+    {
+        parent::update($question->toArray());
+    }
+
     public function createQuestion(QuestionEntity $question): void
     {
         parent::save($question);
     }
+
+    public function deleteQuestion($id): void
+    {
+        parent::delete($id);
+    }
+
+    public function deleteQuestionBySurveyId($id): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM $this->table WHERE survey_id = :id");
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+    }
+
 }

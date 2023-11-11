@@ -3,6 +3,8 @@
 namespace app\models\repository;
 
 use app\core\Database;
+use app\dto\SurveyDto;
+use app\exception\SurveyException;
 use app\models\QuestionEntity;
 use app\models\SurveyEntity;
 use app\repository\ISurveyRepository;
@@ -20,24 +22,18 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
         return parent::getAll();
     }
 
-    public function getSurveyById($id): SurveyEntity
+    /**
+     * @throws SurveyException
+     */
+    public function getSurveyById($id): ?SurveyEntity
     {
         $surveyEntity = parent::findById($id);
-        return new SurveyEntity($surveyEntity->id, $surveyEntity->title, $surveyEntity->description, $surveyEntity->participant, $surveyEntity->created_by, $surveyEntity->created_at);
+        if ($surveyEntity){
+            return new SurveyEntity($surveyEntity->id, $surveyEntity->title, $surveyEntity->description, $surveyEntity->participant, $surveyEntity->created_by, $surveyEntity->created_at);
+        }
+       return null;
     }
 
-//    public function getAllSurvey()
-//    {
-//        $stmt = $this->db->prepare(
-//            "SELECT DISTINCT s.id, s.title AS survey_title, s.description AS survey_description, q.title AS question_title, o.title AS option_title
-//                FROM surveys s
-//                JOIN users u ON (u.id = s.created_by)
-//                JOIN questions q ON (q.survey_id = s.id)
-//                LEFT JOIN options o ON (o.question_id = q.id)
-//                WHERE s.created_by = u.id");
-//            $stmt->execute();
-//           return $stmt->fetchAll();
-//    }
 
     public function createSurvey(SurveyEntity $survey): void
     {
@@ -47,6 +43,11 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
     public function createQuestion(QuestionEntity $question):void
     {
         parent::save($question);
+    }
+
+    public function updateSurvey(SurveyDto $survey): void
+    {
+         parent::update($survey->toArray());
     }
 
     public function updateParticipantRecord($id): bool

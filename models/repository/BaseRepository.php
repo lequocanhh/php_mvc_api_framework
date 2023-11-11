@@ -34,6 +34,17 @@ class BaseRepository
         return $stmt->fetchObject();
     }
 
+    public function update($data): void
+    {
+        $column = array_keys($data);
+        $params = implode(", ", array_map(fn($key) => "$key = :$key", $column));
+        $stmt = $this->db->prepare("UPDATE $this->table SET $params WHERE id = :id");
+        foreach ($data as $key => $value){
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->execute();
+    }
+
     public function save($data): void
     {
         $params= implode(', ',array_map(fn($key) => ":$key", array_keys($data->toArray())));
@@ -45,6 +56,11 @@ class BaseRepository
         $stmt->execute();
     }
 
-
+    public function delete($id): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM $this->table WHERE id = :id");
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+    }
 
 }

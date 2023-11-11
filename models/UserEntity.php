@@ -2,10 +2,14 @@
 
 namespace app\models;
 
-use Ramsey\Uuid\Uuid;
+use app\exception\UserException;
 
 class UserEntity
 {
+    public const MAX_NAME_LENGTH = 10;
+    public const MIN_NAME_LENGTH = 1;
+    public const PASSWORD_REGEX = "$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$";
+
    private string $id;
    private string $firstname;
    private string $lastname;
@@ -20,14 +24,15 @@ class UserEntity
      * @param string $email
      * @param string $password
      * @param bool $is_admin
+     * @throws UserException
      */
     public function __construct(string $id, string $firstname, string $lastname, string $email, string $password, bool $is_admin)
     {
         $this->id = $id;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->email = $email;
-        $this->password = $password;
+        $this->setFirstname($firstname);
+        $this->setLastname($lastname);
+        $this->setEmail($email);
+        $this->setPassword($password);
         $this->is_admin = $is_admin;
     }
 
@@ -46,8 +51,14 @@ class UserEntity
         return $this->firstname;
     }
 
+    /**
+     * @throws UserException
+     */
     public function setFirstname(string $firstname): void
     {
+        if(strlen($firstname) > self::MAX_NAME_LENGTH || strlen($firstname) <= self::MIN_NAME_LENGTH){
+            throw UserException::InvalidStringLength();
+        }
         $this->firstname = $firstname;
     }
 
@@ -56,8 +67,14 @@ class UserEntity
         return $this->lastname;
     }
 
+    /**
+     * @throws UserException
+     */
     public function setLastname(string $lastname): void
     {
+        if(strlen($lastname) > self::MAX_NAME_LENGTH){
+            throw UserException::invalidStringLength();
+        }
         $this->lastname = $lastname;
     }
 
@@ -66,8 +83,14 @@ class UserEntity
         return $this->email;
     }
 
+    /**
+     * @throws UserException
+     */
     public function setEmail(string $email): void
     {
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            throw UserException::invalidEmail();
+        }
         $this->email = $email;
     }
 
@@ -76,10 +99,17 @@ class UserEntity
         return $this->password;
     }
 
+    /**
+     * @throws UserException
+     */
     public function setPassword(string $password): void
     {
+        if(!preg_match_all(self::PASSWORD_REGEX, $password)){
+            throw UserException::inValidPassword();
+        }
         $this->password = $password;
     }
+
 
     public function getIsAdmin(): bool
     {

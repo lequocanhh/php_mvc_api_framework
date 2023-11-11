@@ -5,10 +5,11 @@ namespace app\controllers;
 use app\core\Request;
 use app\core\Response;
 use app\dto\UserLoginDto;
+use app\exception\UserException;
 use app\models\UserEntity;
 use app\service\JwtService;
 use app\service\UserService;
-use Exception;
+use ErrorException;
 use Ramsey\Uuid\Uuid;
 
 
@@ -29,36 +30,35 @@ class UserController
         $lastname = $req['lastname'];
         $email = $req['email'];
         $password = $req['password'];
+        $passwordConfirm = $req['passwordConfirm'];
         $is_admin = $req['is_admin'];
         try {
             $user = new UserEntity(Uuid::uuid4(), $firstname, $lastname, $email, $password, $is_admin);
-            $userCreated = $this->userService->register($user);
-            if($userCreated){
-                $response->render(200, 'Register successfully');
-            }else{
-                $response->render(400, "Register failed");
-            }
-        }catch (Exception $error){
-            throw new \Error("Cannot save user to db .$error");
+            $this->userService->register($user, $passwordConfirm);
+            $response->render(200, 'Register successfully');
+        }catch (UserException $error){
+            $response->render(400, $error->getMessage());
         }
-
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function login(Request $request, Response $response): void
     {
         $req = $request->getBody();
-            $userLogin = new UserLoginDto($req['email'], $req['password']);
+        $email = $req['email'];
+        $password = $req['password'];
+        try {
+            $userLogin = new UserLoginDto($email, $password);
             $userCreated = $this->userService->login($userLogin);
-            if($userCreated){
-                $userResponse = $userCreated->toArray();
-                $userResponse['token'] = JwtService::generateToken($userCreated);
-                $response->render(200, 'Login successfully',$userResponse);
-            }else{
-                $response->render(400, 'Login failed');
-            }
+            $userResponse = $userCreated->toArray();
+            $userResponse['token'] = JwtService::generateToken($userCreated);
+            $response->render(200, 'Login successfully',$userResponse);
+        }
+        catch (UserException $error){
+            $response->render(400, $error->getMessage());
+        }
     }
 
 
