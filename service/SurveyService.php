@@ -34,6 +34,17 @@ class SurveyService
         return $surveyResponse->toArray();
     }
 
+    /**
+     * @throws SurveyException
+     */
+    public function getStatisticSurveyById($id): array
+    {
+        $surveyExist = $this->surveyRepository->getSurveyById($id);
+        !$surveyExist && throw SurveyException::surveyNotFound();
+        $surveyResponse = new SurveyEntity($surveyExist->getId(), $surveyExist->getTitle(), $surveyExist->getDescription(), $surveyExist->getParticipant(), $surveyExist->getCreatedBy(), $surveyExist->getCreatedAt());
+        return $surveyResponse->toArray();
+    }
+
     public function createSurvey(SurveyEntity $survey): void
     {
         $this->surveyRepository->createSurvey($survey);

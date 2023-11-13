@@ -21,7 +21,7 @@ $dotenv->load();
 //header('Content-Type: text/plain');
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
 header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
 header('Content-Type: application/json');
 
@@ -36,15 +36,15 @@ $router = new Router($request, $response, $container);
 $app = new Application(dirname(__DIR__), $request, $response, $router);
 
 
-$app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey']);
+$app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey'], [Authentication::class, "tokenValidation"]);
 $app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById']);
 $app->router->get('/api/v1/survey/edit/{id}', [SurveyController::class, 'getSurveyById']);
+$app->router->get('/api/v1/form/statistic/{id}', [SurveyController::class, 'getStatisticSurveyById']);
 
 $app->router->put('/api/v1/survey/edit', [SurveyController::class, 'updateSurvey']);
 
 $app->router->post('/api/v1/survey/do-form', [SurveyController::class, 'updateRecordDoSurvey']);
 $app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey']);
-
 $app->router->post('/api/v1/register', [UserController::class, 'register']);
 $app->router->post('/api/v1/login', [UserController::class, 'login']);
 

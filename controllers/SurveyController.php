@@ -67,6 +67,31 @@ class SurveyController
         }
     }
 
+    public function getStatisticSurveyById(Request $request, Response $response, string $id): void
+    {
+        $questionSet = [];
+        try {
+            $survey = $this->surveyService->getStatisticSurveyById($id);
+            $questions = $this->questionService->getQuestionBySurveyId($id);
+
+            foreach ($questions as $question) {
+                $options = $this->optionService->getStatisticOptionByQuestionId($question['id']);
+                $questions = [
+                    'id' => $question['id'],
+                    'title' => $question['title'],
+                    'options' => $options
+                ];
+                $questionSet[] = $questions;
+            }
+            $survey['questions'] = $questionSet;
+
+            $response->render(200, 'Get a survey successfully', $survey);
+        }catch (Exception $error){
+            $response->render(400, "Cannot get any survey");
+            echo $error;
+        }
+    }
+
 
     public function createNewSurvey(Request $request, Response $response): void
     {
@@ -134,8 +159,8 @@ class SurveyController
             foreach ($optionAnswerRecord as $recordId){
                $this->optionService->updateOptionRecord($recordId);
             }
-
-
+            $this->surveyRepository->commit();
+            $response->render(200, 'Save record successfully');
         } catch (Exception $error){
             $this->surveyRepository->rollback();
             $response->render(400, $error->getMessage());

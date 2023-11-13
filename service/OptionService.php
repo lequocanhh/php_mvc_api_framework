@@ -31,6 +31,17 @@ class OptionService
         return $options;
     }
 
+    public function getStatisticOptionByQuestionId($id): array
+    {
+        $options = [];
+        $optionList = $this->optionRepository->getAllOptionByQuestionId($id);
+        foreach ($optionList as $option) {
+            $optionResponse = new OptionEntity($option['id'], $id, $option['title'], $option['chooser']);
+            $options[] = $optionResponse->toArray();
+        }
+        return $options;
+    }
+
     public function createOption(OptionEntity $option): void
     {
         $this->optionRepository->createOption($option);
