@@ -37,8 +37,19 @@ class SurveyController
             $data = $this->surveyService->getAllSurvey();
             $response->render(200, 'Get all survey successfully', $data);
         }catch (Exception $error){
-            $response->render(400, "Cannot get any survey");
             echo $error;
+            $response->render(400, "Cannot get any survey");
+        }
+    }
+
+    public function getSurveyIndividual(Request $request, Response $response, string $userId): void
+    {
+        try {
+            $data = $this->surveyService->getSurveyByUserId($userId);
+            $response->render(200, 'Get all survey successfully', $data);
+        }catch (Exception $error){
+            echo $error;
+            $response->render(400, "Cannot get any survey");
         }
     }
 

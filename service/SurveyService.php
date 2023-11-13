@@ -34,6 +34,11 @@ class SurveyService
         return $surveyResponse->toArray();
     }
 
+    public function getSurveyByUserId($id): array
+    {
+        return $this->surveyRepository->getSurveyByUserId($id);
+    }
+
     /**
      * @throws SurveyException
      */

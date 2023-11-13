@@ -8,6 +8,7 @@ use app\exception\SurveyException;
 use app\models\QuestionEntity;
 use app\models\SurveyEntity;
 use app\repository\ISurveyRepository;
+use PDO;
 
 class SurveyRepository extends BaseRepository implements ISurveyRepository
 {
@@ -34,6 +35,13 @@ class SurveyRepository extends BaseRepository implements ISurveyRepository
        return null;
     }
 
+    public function getSurveyByUserId($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM $this->table WHERE created_by = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function createSurvey(SurveyEntity $survey): void
     {

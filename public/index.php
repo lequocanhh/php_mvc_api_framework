@@ -15,10 +15,6 @@ $container = require dirname(__DIR__).'/app/bootstrap.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-//header('Access-Control-Allow-Origin: *');
-//header('Content-Type: application/json; charset=utf-8');
-//header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-//header('Content-Type: text/plain');
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -37,18 +33,19 @@ $app = new Application(dirname(__DIR__), $request, $response, $router);
 
 
 $app->router->get('/api/v1/survey', [SurveyController::class, 'getAllSurvey'], [Authentication::class, "tokenValidation"]);
-$app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById']);
-$app->router->get('/api/v1/survey/edit/{id}', [SurveyController::class, 'getSurveyById']);
-$app->router->get('/api/v1/form/statistic/{id}', [SurveyController::class, 'getStatisticSurveyById']);
+$app->router->get('/api/v1/survey/{userId}', [SurveyController::class, 'getSurveyIndividual']);
+$app->router->get('/api/v1/survey/do-form/{id}', [SurveyController::class, 'getSurveyById'], [Authentication::class, "tokenValidation"]);
+$app->router->get('/api/v1/survey/edit/{id}', [SurveyController::class, 'getSurveyById'], [Authentication::class, "tokenValidation"]);
+$app->router->get('/api/v1/form/statistic/{id}', [SurveyController::class, 'getStatisticSurveyById'], [Authentication::class, "tokenValidation"]);
 
-$app->router->put('/api/v1/survey/edit', [SurveyController::class, 'updateSurvey']);
+$app->router->put('/api/v1/survey/edit', [SurveyController::class, 'updateSurvey'], [Authentication::class, "tokenValidation"]);
 
-$app->router->post('/api/v1/survey/do-form', [SurveyController::class, 'updateRecordDoSurvey']);
-$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey']);
+$app->router->post('/api/v1/survey/do-form', [SurveyController::class, 'updateRecordDoSurvey'], [Authentication::class, "tokenValidation"]);
+$app->router->post('/api/v1/survey/create', [SurveyController::class, 'createNewSurvey'], [Authentication::class, "tokenValidation"]);
 $app->router->post('/api/v1/register', [UserController::class, 'register']);
 $app->router->post('/api/v1/login', [UserController::class, 'login']);
 
-$app->router->delete('/api/v1/survey/{id}', [SurveyController::class, 'deleteSurvey']);
+$app->router->delete('/api/v1/survey/{id}', [SurveyController::class, 'deleteSurvey'], [Authentication::class, "tokenValidation"]);
 
 
 $app->run();
