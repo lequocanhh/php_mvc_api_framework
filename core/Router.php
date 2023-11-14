@@ -30,9 +30,9 @@ class Router
         $this->addRoute('post', $path, $callback, $middleware);
     }
 
-    public function update($path, $callback, $middleware = []): void
+    public function put($path, $callback, $middleware = []): void
     {
-        $this->addRoute('update', $path, $callback, $middleware);
+        $this->addRoute('put', $path, $callback, $middleware);
     }
 
     public function delete($path, $callback, $middleware = []): void
@@ -83,11 +83,8 @@ class Router
         }
 
         list($callback, $params, $middleware) = $routeInfo;
-
         if (!empty($middleware)) {
-            foreach ($middleware as $middlewareCallback) {
-                $this->container->call($middlewareCallback);
-            }
+                $this->container->call($middleware);
         }
 
         return $this->container->call($callback, $params);

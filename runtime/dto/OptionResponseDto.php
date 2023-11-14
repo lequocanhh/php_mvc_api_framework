@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dto;
+namespace app\runtime\dto;
 
-class QuestionResponseDto
+class OptionResponseDto
 {
     private string $id;
     private string $title;
@@ -37,6 +37,12 @@ class QuestionResponseDto
         $this->title = $title;
     }
 
-
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title
+        ];
+    }
 
 }

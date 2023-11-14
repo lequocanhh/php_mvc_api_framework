@@ -2,8 +2,6 @@
 
 namespace app\repository;
 
-use app\dto\UserDto;
-use app\dto\UserLoginDto;
 use app\models\UserEntity;
 
 interface IUserRepository

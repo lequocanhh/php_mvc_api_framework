@@ -28,6 +28,11 @@ class OptionRepository extends BaseRepository implements IOptionRepository
         parent::save($option);
     }
 
+    public function updateOption(OptionEntity $option): void
+    {
+        parent::update($option->toArray());
+    }
+
     public function updateOptionRecord($id): bool
     {
         $stmt = $this->db->prepare("UPDATE $this->table SET chooser = chooser+1 WHERE id = :id");
@@ -35,5 +40,13 @@ class OptionRepository extends BaseRepository implements IOptionRepository
         $stmt->execute();
         $rowCount = $stmt->rowCount();
         return $rowCount > 0;
+    }
+
+
+    public function deleteOptionByQuestionId($id): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM $this->table WHERE question_id = :id");
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
     }
 }

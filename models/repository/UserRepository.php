@@ -2,14 +2,10 @@
 
 namespace app\models\repository;
 
-use app\core\Application;
 use app\core\Database;
-use app\dto\UserDto;
-use app\dto\UserLoginDto;
-use app\helper\Helper;
+use app\exception\UserException;
 use app\models\UserEntity;
 use app\repository\IUserRepository;
-use DI\NotFoundException;
 
 class UserRepository extends BaseRepository implements IUserRepository
 {
@@ -19,10 +15,16 @@ class UserRepository extends BaseRepository implements IUserRepository
         $this->db = $db;
     }
 
+    /**
+     * @throws UserException
+     */
     public function findByEmail($email): ?UserEntity
     {
-        $user = parent::find('email', $email);
-        return $user ? new UserEntity($user->id, $user->firstname, $user->lastname, $user->email, $user->password, $user->is_admin) : null;
+        $userExist = parent::find('email', $email);
+        if(!$userExist){
+            return null;
+        }
+        return new UserEntity($userExist->id, $userExist->firstname, $userExist->lastname, $userExist->email, $userExist->password, $userExist->is_admin);
     }
 
     public function create(UserEntity $user): void

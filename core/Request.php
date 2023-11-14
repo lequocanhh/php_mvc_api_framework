@@ -33,13 +33,10 @@ class Request
 
     public function getBody(): array
     {
-        if($this->getMethod() === 'post'){
+        if($this->getMethod() === 'post' || $this->getMethod() === 'put'){
 
             $post_data = json_decode(file_get_contents("php://input"), true);
             return $this->filterNestedData($post_data);
-//                foreach ($post_data as $key => $value) {
-//                    $this->body[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-//                }
         }
         return [];
     }

@@ -12,12 +12,10 @@ class Database
         $user = $config['user'] ?? '';
         $password = $config['password'] ?? '';
 
-        $this->pdo = new PDO($dsn, $user, $password, [
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ]);
+        $this->pdo = new PDO($dsn, $user, $password);
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
+
 
     public function applyMigrations()
     {
