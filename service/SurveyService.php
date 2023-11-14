@@ -2,11 +2,11 @@
 
 namespace app\service;
 
-use app\dto\SurveyDto;
 use app\exception\SurveyException;
 use app\models\QuestionEntity;
 use app\models\repository\SurveyRepository;
 use app\models\SurveyEntity;
+use app\runtime\dto\SurveyDto;
 use RuntimeException;
 
 class SurveyService
@@ -60,14 +60,13 @@ class SurveyService
        $this->surveyRepository->updateSurvey($survey);
     }
 
+    /**
+     * @throws SurveyException
+     */
     public function updateParticipantRecord($id): bool
     {
        $isUpdated = $this->surveyRepository->updateParticipantRecord($id);
-       return $isUpdated ? true : throw new RuntimeException("Cannot send this record, please try again!");
+       return $isUpdated ? true : throw SurveyException::updateRecordFailed();
     }
 
-    public function createQuestion(QuestionEntity $question): void
-    {
-
-    }
 }

@@ -16,5 +16,9 @@ class SurveyException extends \Exception
     {
         return new static("This survey is not found, please try again!");
     }
+    public static function updateRecordFailed(): SurveyException
+    {
+        return new static("Cannot send this record, please try again!");
+    }
 
 }

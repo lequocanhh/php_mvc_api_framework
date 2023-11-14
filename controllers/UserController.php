@@ -4,9 +4,9 @@ namespace app\controllers;
 
 use app\core\Request;
 use app\core\Response;
-use app\dto\UserLoginDto;
 use app\exception\UserException;
 use app\models\UserEntity;
+use app\runtime\dto\UserLoginDto;
 use app\service\JwtService;
 use app\service\UserService;
 use ErrorException;
@@ -31,7 +31,7 @@ class UserController
         $email = $req['email'];
         $password = $req['password'];
         $passwordConfirm = $req['passwordConfirm'];
-        $is_admin = $req['is_admin'];
+        $is_admin = 0;
         try {
             $user = new UserEntity(Uuid::uuid4(), $firstname, $lastname, $email, $password, $is_admin);
             $this->userService->register($user, $passwordConfirm);

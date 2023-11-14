@@ -2,15 +2,10 @@
 
 namespace app\models\repository;
 
-use app\core\Application;
 use app\core\Database;
-use app\dto\UserDto;
-use app\dto\UserLoginDto;
 use app\exception\UserException;
-use app\helper\Helper;
 use app\models\UserEntity;
 use app\repository\IUserRepository;
-use DI\NotFoundException;
 
 class UserRepository extends BaseRepository implements IUserRepository
 {

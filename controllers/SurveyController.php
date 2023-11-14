@@ -4,11 +4,11 @@ namespace app\controllers;
 
 use app\core\Request;
 use app\core\Response;
-use app\dto\SurveyDto;
 use app\models\OptionEntity;
 use app\models\QuestionEntity;
 use app\models\repository\SurveyRepository;
 use app\models\SurveyEntity;
+use app\runtime\dto\SurveyDto;
 use app\service\OptionService;
 use app\service\QuestionService;
 use app\service\SurveyService;

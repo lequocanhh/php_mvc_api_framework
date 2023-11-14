@@ -3,7 +3,6 @@
 namespace app\models\repository;
 
 use app\core\Database;
-use app\dto\OptionDto;
 use app\models\OptionEntity;
 use app\repository\IOptionRepository;
 use PDO;

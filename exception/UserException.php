@@ -16,7 +16,7 @@ class UserException extends \Exception
 
     public static function inValidPassword(): UserException
     {
-        return new static("Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character!");
+        return new static("Password must contain at least 8 characters!");
     }
 
     public static function invalidPasswordConfirm(): UserException

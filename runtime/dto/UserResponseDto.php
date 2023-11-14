@@ -1,6 +1,6 @@
 <?php
 
-namespace app\dto;
+namespace app\runtime\dto;
 
 class UserResponseDto
 {

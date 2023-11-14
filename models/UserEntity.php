@@ -8,14 +8,14 @@ class UserEntity
 {
     public const MAX_NAME_LENGTH = 10;
     public const MIN_NAME_LENGTH = 1;
-    public const PASSWORD_REGEX = "$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$";
+    public const MIN_PASSWORD_LENGTH = 8;
 
    private string $id;
    private string $firstname;
    private string $lastname;
    private string $email;
    private string $password;
-   private bool $is_admin;
+   private string $is_admin;
 
     /**
      * @param string $id
@@ -23,10 +23,10 @@ class UserEntity
      * @param string $lastname
      * @param string $email
      * @param string $password
-     * @param bool $is_admin
+     * @param string $is_admin
      * @throws UserException
      */
-    public function __construct(string $id, string $firstname, string $lastname, string $email, string $password, bool $is_admin)
+    public function __construct(string $id, string $firstname, string $lastname, string $email, string $password, string $is_admin)
     {
         $this->id = $id;
         $this->setFirstname($firstname);
@@ -104,7 +104,7 @@ class UserEntity
      */
     public function setPassword(string $password): void
     {
-        if(!preg_match_all(self::PASSWORD_REGEX, $password)){
+        if(strlen($password) < self::MIN_PASSWORD_LENGTH){
             throw UserException::inValidPassword();
         }
         $this->password = $password;

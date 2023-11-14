@@ -1,7 +1,7 @@
 <?php
 
-namespace app\dto;
-class QuestionDto{
+namespace app\runtime\dto;
+class OptionDto{
     private string $id;
     private string $title;
 

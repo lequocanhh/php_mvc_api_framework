@@ -22,7 +22,6 @@ class BaseRepository
         $stmt = $this->db->prepare("SELECT * FROM $this->table WHERE id = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
-
         return $stmt->fetchObject();
     }
 

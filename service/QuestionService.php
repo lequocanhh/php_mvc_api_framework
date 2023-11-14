@@ -2,9 +2,10 @@
 
 namespace app\service;
 
-use app\dto\QuestionResponseDto;
+use app\exception\QuestionException;
 use app\models\QuestionEntity;
 use app\models\repository\QuestionRepository;
+use app\runtime\dto\QuestionResponseDto;
 use Ramsey\Uuid\Uuid;
 
 class QuestionService
@@ -20,11 +21,13 @@ class QuestionService
 
     /**
      * @return QuestionResponseDto[]
+     * @throws QuestionException
      */
     public function getQuestionBySurveyId($surveyId): array
     {
         $questions = [];
         $questionList = $this->questionRepository->getQuestionBySurveyId($surveyId);
+        empty($questionList) && throw QuestionException::questionNotFound();
         foreach ($questionList as $question) {
             $questionsResponse = new QuestionResponseDto($question['id'], $question['title']);
             $questions[] = $questionsResponse->toArray();
@@ -37,6 +40,9 @@ class QuestionService
         $this->questionRepository->createQuestion($question);
     }
 
+    /**
+     * @throws QuestionException
+     */
     public function updateQuestion($surveyId, $newQuestions): void
     {
         $oldQuestions = $this->getQuestionBySurveyId($surveyId);
@@ -56,7 +62,6 @@ class QuestionService
             $idB = $b['id'] ?? null;
             return $idA <=> $idB;
         });
-
 
             if(!empty($questionToUpdate)){
                 foreach ($questionToUpdate as $questionData){

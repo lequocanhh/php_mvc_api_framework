@@ -3,11 +3,11 @@
 namespace app\models\repository;
 
 use app\core\Database;
-use app\dto\SurveyDto;
 use app\exception\SurveyException;
 use app\models\QuestionEntity;
 use app\models\SurveyEntity;
 use app\repository\ISurveyRepository;
+use app\runtime\dto\SurveyDto;
 use PDO;
 
 class SurveyRepository extends BaseRepository implements ISurveyRepository

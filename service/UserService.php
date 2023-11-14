@@ -2,15 +2,11 @@
 
 namespace app\service;
 
-use app\dto\UserDto;
-use app\dto\UserLoginDto;
-use app\dto\UserResponseDto;
 use app\exception\UserException;
 use app\models\repository\UserRepository;
 use app\models\UserEntity;
-use app\repository\IUserRepository;
-use DI\NotFoundException;
-use ErrorException;
+use app\runtime\dto\UserLoginDto;
+use app\runtime\dto\UserResponseDto;
 
 class UserService
 {

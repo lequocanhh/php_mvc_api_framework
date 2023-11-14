@@ -2,9 +2,9 @@
 
 namespace app\service;
 
-use app\dto\OptionResponseDto;
 use app\models\OptionEntity;
 use app\models\repository\OptionRepository;
+use app\runtime\dto\OptionResponseDto;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
@@ -49,7 +49,6 @@ class OptionService
 
     public function createOptionByQuestionId(string $questionId, array $options): void
     {
-        var_dump($questionId);
         foreach ($options as $option){
             $optionEntity = new OptionEntity(Uuid::uuid4(), $questionId, $option['title'], 0);
             $this->optionRepository->createOption($optionEntity);

@@ -1,7 +1,6 @@
 <?php
 
-namespace app\dto;
-use Ramsey\Uuid\Uuid;
+namespace app\runtime\dto;
 
 class UserDto
 {
